@@ -1,0 +1,81 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.0'
+    id 'xyz.jpenilla.run-paper' version "2.3.0"
+}
+
+tasks.withType(ProcessResources).configureEach {
+    var properties = [
+        name : project.name,
+        version : project.version,
+        description : project.description,
+        main : project.main_class
+    ]
+
+    inputs.properties properties
+
+    filesMatching(["plugin.yml"]) {
+        expand properties + [project: project]
+    }
+}
+
+dependencies {
+    compileOnly("org.spigotmc:spigot-api:$minecraft_version-$spigot_version")
+
+    implementation 'be.raft.crafty:crafty-builder:1.8.8-3.1.0'
+}
+
+shadowJar {
+    archiveClassifier.set('')
+}
+
+build {
+    dependsOn shadowJar
+}
+
+jar {
+    enabled = false
+}
+
+tasks {
+    runServer {
+        minecraftVersion("1.8.8")
+    }
+}
+
+allprojects {
+    apply plugin: 'idea'
+
+    group project.group
+    version project.version
+
+    repositories {
+        mavenCentral()
+        maven {
+            name = "spigotmc-repo"
+            url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
+        }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/groups/public/"
+        }
+        maven {
+            name = "atlas-repo"
+            url = "https://repository.atlasworld.fr/repository/maven-public/"
+        }
+    }
+
+    idea {
+        module {
+            downloadSources = true
+        }
+    }
+
+    compileJava {
+        options.encoding = 'UTF-8'
+    }
+
+    java {
+        toolchain.languageVersion.set(JavaLanguageVersion.of(project.java_version))
+    }
+}

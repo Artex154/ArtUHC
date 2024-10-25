@@ -1,0 +1,12 @@
+name: '${name}'
+version: '${version}'
+main: '${main}'
+description: '${description}'
+permissions:
+  artuhc.host:
+    description: La permission demandée pour avoir accès à la configuration et aux commandes host.
+commands:
+  h:
+    description: Les commandes hosts.
+    usage: "§6§l ArtUHC §7| §rVous n'avez pas les permissions requises."
+
